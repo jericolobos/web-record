@@ -1,28 +1,51 @@
 // src/App.jsx
-
 import { useState, useEffect } from "react";
-import { getApplications } from "./services/apiService";
-import "./App.css";
+import {
+  getApplications,
+  createApplication,
+  updateApplication,
+  deleteApplication,
+} from "./services/apiService";
+import ApplicationForm from "./components/ApplicationForm";
+import ApplicationList from "./components/ApplicationList";
+import "./index.css";
 
 function App() {
-  // State to hold all job applications
   const [applications, setApplications] = useState([]);
 
-  // Load data on initial render
   useEffect(() => {
     setApplications(getApplications());
   }, []);
 
+  const handleAddApplication = (newApp) => {
+    setApplications(createApplication(newApp));
+  };
+
+  const handleUpdateApplication = (updatedApp) => {
+    setApplications(updateApplication(updatedApp));
+  };
+
+  const handleDeleteApplication = (id) => {
+    setApplications(deleteApplication(id));
+  };
+
   return (
-    <div className="container">
+    <div className="dashboard-container">
       <header>
-        <h1>Internship & Tech Role Tracker</h1>
+        <h1 className="header-title">Internship & Tech Role Tracker</h1>
       </header>
 
       <main>
-        {/* We will build and insert <ApplicationForm /> here next */}
+        <ApplicationForm onAdd={handleAddApplication} />
 
-        {/* We will build and insert <ApplicationList /> here after */}
+        <div>
+          <h2>My Applications ({applications.length})</h2>
+          <ApplicationList
+            applications={applications}
+            onUpdate={handleUpdateApplication}
+            onDelete={handleDeleteApplication}
+          />
+        </div>
       </main>
     </div>
   );
