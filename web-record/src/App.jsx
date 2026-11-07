@@ -32,7 +32,7 @@ function App() {
   return (
     <div className="dashboard-container">
       <header>
-        <h1 className="header-title">Internship & Tech Role Tracker</h1>
+        <h1 className="header-title">Internship & Tech Role Trackers</h1>
       </header>
 
       <main>
