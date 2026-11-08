@@ -1,5 +1,6 @@
 // src/App.jsx
 import { useState, useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
 import {
   getApplications,
   createApplication,
@@ -9,12 +10,13 @@ import {
 import ApplicationForm from "./components/ApplicationForm";
 import ApplicationList from "./components/ApplicationList";
 import DashboardSummary from "./components/DashboardSummary";
+import ApplicationDetail from "./components/ApplicationDetail";
 import "./index.css";
 
 function App() {
   const [applications, setApplications] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("dateDesc"); // New state for sorting
+  const [sortBy, setSortBy] = useState("dateDesc");
 
   useEffect(() => {
     setApplications(getApplications());
@@ -32,24 +34,19 @@ function App() {
     setApplications(deleteApplication(id));
   };
 
-  // 1. First, filter the applications based on the search term
   const filteredApps = applications.filter(
     (app) =>
       app.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
       app.role.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  // 2. Then, sort the filtered array based on the selected dropdown value
   const sortedAndFilteredApps = [...filteredApps].sort((a, b) => {
-    if (sortBy === "dateDesc") {
+    if (sortBy === "dateDesc")
       return new Date(b.dateApplied) - new Date(a.dateApplied);
-    } else if (sortBy === "dateAsc") {
+    if (sortBy === "dateAsc")
       return new Date(a.dateApplied) - new Date(b.dateApplied);
-    } else if (sortBy === "company") {
-      return a.company.localeCompare(b.company);
-    } else if (sortBy === "status") {
-      return a.status.localeCompare(b.status);
-    }
+    if (sortBy === "company") return a.company.localeCompare(b.company);
+    if (sortBy === "status") return a.status.localeCompare(b.status);
     return 0;
   });
 
@@ -60,64 +57,81 @@ function App() {
       </header>
 
       <main>
-        <DashboardSummary applications={applications} />
+        <Routes>
+          {/* Route 1: The Main Dashboard */}
+          <Route
+            path="/"
+            element={
+              <>
+                <DashboardSummary applications={applications} />
+                <ApplicationForm onAdd={handleAddApplication} />
 
-        <ApplicationForm onAdd={handleAddApplication} />
+                <div style={{ marginTop: "2rem" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "1rem",
+                      flexWrap: "wrap",
+                      gap: "10px",
+                    }}
+                  >
+                    <h2 style={{ margin: 0 }}>
+                      My Applications ({sortedAndFilteredApps.length})
+                    </h2>
 
-        <div style={{ marginTop: "2rem" }}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "1rem",
-              flexWrap: "wrap",
-              gap: "10px",
-            }}
-          >
-            <h2 style={{ margin: 0 }}>
-              My Applications ({sortedAndFilteredApps.length})
-            </h2>
+                    <div style={{ display: "flex", gap: "10px" }}>
+                      <input
+                        type="text"
+                        placeholder="Search companies or roles..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{
+                          width: "250px",
+                          padding: "0.5rem",
+                          borderRadius: "6px",
+                        }}
+                      />
+                      <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        style={{
+                          padding: "0.5rem",
+                          borderRadius: "6px",
+                          width: "auto",
+                        }}
+                      >
+                        <option value="dateDesc">Newest First</option>
+                        <option value="dateAsc">Oldest First</option>
+                        <option value="company">Company (A-Z)</option>
+                        <option value="status">Status</option>
+                      </select>
+                    </div>
+                  </div>
 
-            <div style={{ display: "flex", gap: "10px" }}>
-              {/* Search Bar */}
-              <input
-                type="text"
-                placeholder="Search companies or roles..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                style={{
-                  width: "250px",
-                  padding: "0.5rem",
-                  borderRadius: "6px",
-                }}
-              />
-
-              {/* Sort Dropdown */}
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                style={{
-                  padding: "0.5rem",
-                  borderRadius: "6px",
-                  width: "auto",
-                }}
-              >
-                <option value="dateDesc">Newest First</option>
-                <option value="dateAsc">Oldest First</option>
-                <option value="company">Company (A-Z)</option>
-                <option value="status">Status</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Pass the sorted list to the UI */}
-          <ApplicationList
-            applications={sortedAndFilteredApps}
-            onUpdate={handleUpdateApplication}
-            onDelete={handleDeleteApplication}
+                  <ApplicationList
+                    applications={sortedAndFilteredApps}
+                    onUpdate={handleUpdateApplication}
+                    onDelete={handleDeleteApplication}
+                  />
+                </div>
+              </>
+            }
           />
-        </div>
+
+          {/* Route 2: The Detail Page */}
+          <Route
+            path="/application/:id"
+            element={
+              <ApplicationDetail
+                applications={applications}
+                onUpdate={handleUpdateApplication}
+                onDelete={handleDeleteApplication}
+              />
+            }
+          />
+        </Routes>
       </main>
     </div>
   );

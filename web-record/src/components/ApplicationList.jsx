@@ -1,4 +1,5 @@
 // src/components/ApplicationList.jsx
+import { Link } from "react-router-dom";
 
 function ApplicationList({ applications, onUpdate, onDelete }) {
   if (applications.length === 0) {
@@ -15,7 +16,6 @@ function ApplicationList({ applications, onUpdate, onDelete }) {
     );
   }
 
-  // Helper function to map the status to our CSS variables
   const getBadgeStyle = (status) => {
     const statusKey = status.toLowerCase();
     return {
@@ -65,6 +65,22 @@ function ApplicationList({ applications, onUpdate, onDelete }) {
               <option value="Rejected">Rejected</option>
               <option value="Offer">Offer</option>
             </select>
+
+            {/* NEW: Link to the Detail Page */}
+            <Link
+              to={`/application/${app.id}`}
+              style={{
+                padding: "0.5rem 1rem",
+                backgroundColor: "var(--bg-color)",
+                color: "var(--text-main)",
+                border: "1px solid var(--border)",
+                borderRadius: "6px",
+                textDecoration: "none",
+                fontWeight: "600",
+              }}
+            >
+              Details
+            </Link>
 
             <button
               onClick={() => onDelete(app.id)}
