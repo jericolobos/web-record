@@ -18,9 +18,25 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("dateDesc");
 
+  // NEW: Dark mode state initializing from LocalStorage
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return localStorage.getItem("theme") === "dark";
+  });
+
   useEffect(() => {
     setApplications(getApplications());
   }, []);
+
+  // NEW: Effect to toggle the data-theme attribute on the HTML root element
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.setAttribute("data-theme", "dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+      localStorage.setItem("theme", "light");
+    }
+  }, [isDarkMode]);
 
   const handleAddApplication = (newApp) => {
     setApplications(createApplication(newApp));
@@ -52,13 +68,23 @@ function App() {
 
   return (
     <div className="dashboard-container">
-      <header>
+      {/* NEW: Updated Header Layout with Toggle Button */}
+      <header className="header-container">
         <h1 className="header-title">Internship & Tech Role Tracker</h1>
+
+        {/* NEW: The Switch UI */}
+        <label className="theme-switch" aria-label="Toggle Dark Mode">
+          <input
+            type="checkbox"
+            checked={isDarkMode}
+            onChange={() => setIsDarkMode(!isDarkMode)}
+          />
+          <span className="theme-slider"></span>
+        </label>
       </header>
 
       <main>
         <Routes>
-          {/* Route 1: The Main Dashboard */}
           <Route
             path="/"
             element={
@@ -120,7 +146,6 @@ function App() {
             }
           />
 
-          {/* Route 2: The Detail Page */}
           <Route
             path="/application/:id"
             element={

@@ -1,7 +1,8 @@
 :root {
-  /* Brand Colors */
+  /* Light Theme (Default) */
   --bg-color: #f4f7f9;
   --card-bg: #ffffff;
+  --input-bg: #ffffff;
   --text-main: #1e293b;
   --text-muted: #64748b;
   --border: #e2e8f0;
@@ -9,7 +10,7 @@
   --primary-hover: #1d4ed8;
   --danger: #ef4444;
 
-  /* Status Badge Colors */
+  /* Status Badge Colors - Light */
   --status-applied-bg: #dbeafe;
   --status-applied-text: #1e40af;
   --status-interviewing-bg: #fef08a;
@@ -20,6 +21,26 @@
   --status-offer-text: #166534;
 }
 
+[data-theme='dark'] {
+  /* Dark Theme */
+  --bg-color: #0f172a;
+  --card-bg: #1e293b;
+  --input-bg: #1e293b;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --border: #334155;
+
+  /* Status Badge Colors - Dark Mode Adjusted */
+  --status-applied-bg: #1e3a8a;
+  --status-applied-text: #bfdbfe;
+  --status-interviewing-bg: #713f12;
+  --status-interviewing-text: #fef08a;
+  --status-rejected-bg: #7f1d1d;
+  --status-rejected-text: #fecaca;
+  --status-offer-bg: #14532d;
+  --status-offer-text: #bbf7d0;
+}
+
 * { box-sizing: border-box; }
 
 body {
@@ -27,22 +48,25 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   background-color: var(--bg-color);
   color: var(--text-main);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1, h2, h3, h4 { margin-top: 0; }
 
 /* Global Form Elements */
-input, select {
+input, select, textarea {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid var(--border);
   border-radius: 6px;
   font-size: 1rem;
   outline: none;
-  transition: border-color 0.2s;
+  background-color: var(--input-bg);
+  color: var(--text-main);
+  transition: all 0.3s ease;
 }
 
-input:focus, select:focus { border-color: var(--primary); }
+input:focus, select:focus, textarea:focus { border-color: var(--primary); }
 
 button {
   padding: 0.75rem 1.5rem;
@@ -53,9 +77,10 @@ button {
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, transform 0.1s;
 }
 
+button:active { transform: scale(0.98); }
 button:hover { background-color: var(--primary-hover); }
 
 /* Layout Classes */
@@ -65,12 +90,19 @@ button:hover { background-color: var(--primary-hover); }
   padding: 0 1rem;
 }
 
-.header-title {
-  font-size: 2rem;
-  color: var(--text-main);
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 2rem;
   border-bottom: 2px solid var(--border);
   padding-bottom: 1rem;
+}
+
+.header-title {
+  font-size: 2rem;
+  color: var(--text-main);
+  margin: 0;
 }
 
 .card {
@@ -80,4 +112,60 @@ button:hover { background-color: var(--primary-hover); }
   padding: 1.5rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   margin-bottom: 2rem;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* --- Theme Toggle Switch --- */
+.theme-switch {
+  position: relative;
+  display: inline-block;
+  width: 64px;
+  height: 32px;
+}
+
+/* Hide default HTML checkbox */
+.theme-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The track (pill background) */
+.theme-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: var(--border);
+  transition: 0.4s;
+  border-radius: 32px;
+}
+
+/* The thumb (sliding circle) */
+.theme-slider::before {
+  position: absolute;
+  content: "☀️";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  width: 24px;
+  left: 4px;
+  bottom: 4px;
+  background-color: #ffffff;
+  transition: 0.4s cubic-bezier(0.4, 0.0, 0.2, 1); /* Smooth snap effect */
+  border-radius: 50%;
+  font-size: 14px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Track color when Dark Mode is ON */
+input:checked + .theme-slider {
+  background-color: var(--primary);
+}
+
+/* Move the thumb and swap to Moon when Dark Mode is ON */
+input:checked + .theme-slider::before {
+  transform: translateX(32px);
+  content: "🌙";
+  background-color: #1e293b; /* Matches dark mode background */
 }
