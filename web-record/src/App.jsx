@@ -18,7 +18,6 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("dateDesc");
 
-  // NEW: Dark mode state initializing from LocalStorage
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return localStorage.getItem("theme") === "dark";
   });
@@ -27,7 +26,6 @@ function App() {
     setApplications(getApplications());
   }, []);
 
-  // NEW: Effect to toggle the data-theme attribute on the HTML root element
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.setAttribute("data-theme", "dark");
@@ -68,11 +66,9 @@ function App() {
 
   return (
     <div className="dashboard-container">
-      {/* NEW: Updated Header Layout with Toggle Button */}
       <header className="header-container">
         <h1 className="header-title">Internship & Tech Role Tracker</h1>
 
-        {/* NEW: The Switch UI */}
         <label className="theme-switch" aria-label="Toggle Dark Mode">
           <input
             type="checkbox"
@@ -92,39 +88,28 @@ function App() {
                 <DashboardSummary applications={applications} />
                 <ApplicationForm onAdd={handleAddApplication} />
 
-                <div style={{ marginTop: "2rem" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: "1rem",
-                      flexWrap: "wrap",
-                      gap: "10px",
-                    }}
-                  >
-                    <h2 style={{ margin: 0 }}>
-                      My Applications ({sortedAndFilteredApps.length})
-                    </h2>
+                <div style={{ marginTop: "32px" }}>
+                  <div className="controls-bar">
+                    <h2>My Applications ({sortedAndFilteredApps.length})</h2>
 
                     <div style={{ display: "flex", gap: "10px" }}>
                       <input
                         type="text"
-                        placeholder="Search companies or roles..."
+                        placeholder="Search companies..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         style={{
                           width: "250px",
-                          padding: "0.5rem",
-                          borderRadius: "6px",
+                          padding: "0.75rem",
+                          borderRadius: "12px",
                         }}
                       />
                       <select
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}
                         style={{
-                          padding: "0.5rem",
-                          borderRadius: "6px",
+                          padding: "0.75rem",
+                          borderRadius: "12px",
                           width: "auto",
                         }}
                       >
