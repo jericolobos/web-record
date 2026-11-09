@@ -1,16 +1,29 @@
 :root {
-  /* Light Theme (Default) */
-  --bg-color: #f4f7f9;
-  --card-bg: #ffffff;
-  --input-bg: #ffffff;
-  --text-main: #1e293b;
+  /* Soft 3D Base Colors - Light Theme */
+  --bg-color: #e6eef4; /* A soft, playful light blue-grey */
+  --card-bg: #e6eef4; /* Must match bg-color for the 3D extrusion effect */
+  --input-bg: #e6eef4;
+  --text-main: #334155;
   --text-muted: #64748b;
-  --border: #e2e8f0;
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
-  --danger: #ef4444;
+  
+  /* Playful, tactile brand colors */
+  --primary: #6366f1; /* Soft Indigo */
+  --danger: #fb7185;  /* Soft Rose/Coral */
 
-  /* Status Badge Colors - Light */
+  /* 3D Lighting & Shadows - Light */
+  /* Outer shadow creates the "extruded" floating look */
+  --shadow-out: 10px 10px 20px #c5ccd5, -10px -10px 20px #ffffff;
+  /* Inner shadow creates the "carved in" look for inputs */
+  --shadow-in: inset 6px 6px 12px #c5ccd5, inset -6px -6px 12px #ffffff;
+  /* Colored button 3D effect (highlight on top, shadow on bottom) */
+  --btn-primary-shadow: 6px 6px 14px rgba(99, 102, 241, 0.3), inset 3px 3px 8px rgba(255, 255, 255, 0.4), inset -3px -3px 8px rgba(0, 0, 0, 0.15);
+  --btn-danger-shadow: 6px 6px 14px rgba(251, 113, 133, 0.3), inset 3px 3px 8px rgba(255, 255, 255, 0.4), inset -3px -3px 8px rgba(0, 0, 0, 0.15);
+
+  /* Exaggerated, friendly border radii */
+  --radius-card: 28px;
+  --radius-element: 16px;
+
+  /* Status Badge Colors */
   --status-applied-bg: #dbeafe;
   --status-applied-text: #1e40af;
   --status-interviewing-bg: #fef08a;
@@ -22,13 +35,22 @@
 }
 
 [data-theme='dark'] {
-  /* Dark Theme */
-  --bg-color: #0f172a;
-  --card-bg: #1e293b;
-  --input-bg: #1e293b;
+  /* Soft 3D Base Colors - Dark Theme */
+  --bg-color: #212530; /* Soft, deep charcoal */
+  --card-bg: #212530;
+  --input-bg: #212530;
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
-  --border: #334155;
+  
+  --primary: #818cf8;
+  --danger: #f43f5e;
+
+  /* 3D Lighting & Shadows - Dark */
+  --shadow-out: 10px 10px 20px #161920, -10px -10px 20px #2c3140;
+  --shadow-in: inset 6px 6px 12px #161920, inset -6px -6px 12px #2c3140;
+  
+  --btn-primary-shadow: 6px 6px 14px rgba(0, 0, 0, 0.4), inset 2px 2px 6px rgba(255, 255, 255, 0.1), inset -3px -3px 8px rgba(0, 0, 0, 0.3);
+  --btn-danger-shadow: 6px 6px 14px rgba(0, 0, 0, 0.4), inset 2px 2px 6px rgba(255, 255, 255, 0.1), inset -3px -3px 8px rgba(0, 0, 0, 0.3);
 
   /* Status Badge Colors - Dark Mode Adjusted */
   --status-applied-bg: #1e3a8a;
@@ -45,127 +67,135 @@
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   background-color: var(--bg-color);
   color: var(--text-main);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-h1, h2, h3, h4 { margin-top: 0; }
+h1, h2, h3, h4 { margin-top: 0; letter-spacing: -0.5px; }
 
-/* Global Form Elements */
+/* 3D Carved Inputs */
 input, select, textarea {
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 1rem;
-  outline: none;
+  padding: 1rem;
   background-color: var(--input-bg);
   color: var(--text-main);
+  border: none;
+  border-radius: var(--radius-element);
+  box-shadow: var(--shadow-in);
+  font-size: 1rem;
+  outline: none;
   transition: all 0.3s ease;
 }
 
-input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+input:focus, select:focus, textarea:focus { 
+  /* Subtle glow when focused */
+  box-shadow: var(--shadow-in), 0 0 0 3px rgba(99, 102, 241, 0.2); 
+}
 
+/* 3D Extruded Buttons */
 button {
-  padding: 0.75rem 1.5rem;
+  padding: 1rem 1.75rem;
   background-color: var(--primary);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-element);
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
+  box-shadow: var(--btn-primary-shadow);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-button:active { transform: scale(0.98); }
-button:hover { background-color: var(--primary-hover); }
+/* Button active state mimics pressing into clay */
+button:active { 
+  transform: translateY(4px) scale(0.98); 
+  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.2), inset -4px -4px 8px rgba(255, 255, 255, 0.1);
+}
 
-/* Layout Classes */
+/* Specific styling for the danger/delete button */
+button[style*="var(--danger)"] {
+  background-color: var(--danger) !important;
+  box-shadow: var(--btn-danger-shadow) !important;
+}
+
+/* 3D Soft Cards */
 .dashboard-container {
-  max-width: 900px;
-  margin: 2rem auto;
-  padding: 0 1rem;
+  max-width: 950px;
+  margin: 3rem auto;
+  padding: 0 1.5rem;
 }
 
 .header-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
-  border-bottom: 2px solid var(--border);
-  padding-bottom: 1rem;
+  margin-bottom: 3rem;
 }
 
 .header-title {
-  font-size: 2rem;
+  font-size: 2.5rem;
   color: var(--text-main);
   margin: 0;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.05); /* Slight text depth */
 }
 
 .card {
   background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  margin-bottom: 2rem;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  border: none;
+  border-radius: var(--radius-card);
+  padding: 2rem;
+  box-shadow: var(--shadow-out);
+  margin-bottom: 2.5rem;
+  transition: all 0.4s ease;
 }
 
-/* --- Theme Toggle Switch --- */
+/* --- 3D Theme Toggle Switch --- */
 .theme-switch {
   position: relative;
   display: inline-block;
-  width: 64px;
-  height: 32px;
+  width: 72px;
+  height: 36px;
 }
 
-/* Hide default HTML checkbox */
 .theme-switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
 
-/* The track (pill background) */
+/* The switch track is carved into the surface */
 .theme-slider {
   position: absolute;
   cursor: pointer;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-color: var(--border);
+  background-color: var(--bg-color);
+  box-shadow: var(--shadow-in);
   transition: 0.4s;
-  border-radius: 32px;
+  border-radius: 36px;
 }
 
-/* The thumb (sliding circle) */
+/* The thumb is a 3D extruded pill */
 .theme-slider::before {
   position: absolute;
   content: "☀️";
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 24px;
-  width: 24px;
+  height: 28px;
+  width: 28px;
   left: 4px;
   bottom: 4px;
-  background-color: #ffffff;
-  transition: 0.4s cubic-bezier(0.4, 0.0, 0.2, 1); /* Smooth snap effect */
+  background-color: var(--card-bg);
+  box-shadow: 3px 3px 6px rgba(0,0,0,0.1), -2px -2px 4px rgba(255,255,255,0.5);
+  transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Bouncy spring effect */
   border-radius: 50%;
   font-size: 14px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-/* Track color when Dark Mode is ON */
-input:checked + .theme-slider {
-  background-color: var(--primary);
-}
-
-/* Move the thumb and swap to Moon when Dark Mode is ON */
 input:checked + .theme-slider::before {
-  transform: translateX(32px);
+  transform: translateX(36px);
   content: "🌙";
-  background-color: #1e293b; /* Matches dark mode background */
+  box-shadow: 3px 3px 6px rgba(0,0,0,0.3), -2px -2px 4px rgba(255,255,255,0.05);
 }
