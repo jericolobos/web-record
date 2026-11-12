@@ -19,10 +19,7 @@ function ApplicationForm({ onAdd, showToast }) {
     if (!formData.company.trim() || !formData.role.trim()) return;
 
     onAdd(formData);
-
-    // NEW: Fire the toast here
-    showToast(`Application saved for ${formData.company}!`, "success");
-
+    showToast(`Application saved for ${formData.company}.`, "success");
     setFormData({
       company: "",
       role: "",
@@ -33,51 +30,35 @@ function ApplicationForm({ onAdd, showToast }) {
 
   return (
     <div className="card">
-      <h2 style={{ marginBottom: "1.5rem" }}>Log New Application</h2>
+      <h2 style={{ marginBottom: "24px", fontSize: "1.125rem" }}>
+        Log New Application
+      </h2>
       <form onSubmit={handleSubmit}>
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gap: "1rem",
-            marginBottom: "1rem",
+            gap: "16px",
+            marginBottom: "16px",
           }}
         >
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "0.5rem",
-                fontSize: "0.875rem",
-                color: "var(--glass-muted)",
-              }}
-            >
-              Company
-            </label>
+            <label>Company</label>
             <input
               type="text"
               name="company"
-              placeholder="e.g. Google"
+              placeholder="e.g. Stripe"
               value={formData.company}
               onChange={handleChange}
               required
             />
           </div>
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "0.5rem",
-                fontSize: "0.875rem",
-                color: "var(--glass-muted)",
-              }}
-            >
-              Role
-            </label>
+            <label>Role</label>
             <input
               type="text"
               name="role"
-              placeholder="e.g. Frontend Intern"
+              placeholder="e.g. Frontend Engineer"
               value={formData.role}
               onChange={handleChange}
               required
@@ -89,21 +70,12 @@ function ApplicationForm({ onAdd, showToast }) {
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gap: "1rem",
-            marginBottom: "1.5rem",
+            gap: "16px",
+            marginBottom: "32px",
           }}
         >
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "0.5rem",
-                fontSize: "0.875rem",
-                color: "var(--glass-muted)",
-              }}
-            >
-              Status
-            </label>
+            <label>Status</label>
             <select
               name="status"
               value={formData.status}
@@ -116,16 +88,7 @@ function ApplicationForm({ onAdd, showToast }) {
             </select>
           </div>
           <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "0.5rem",
-                fontSize: "0.875rem",
-                color: "var(--glass-muted)",
-              }}
-            >
-              Date Applied
-            </label>
+            <label>Date Applied</label>
             <input
               type="date"
               name="dateApplied"
