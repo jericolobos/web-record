@@ -11,12 +11,20 @@ import ApplicationForm from "./components/ApplicationForm";
 import ApplicationList from "./components/ApplicationList";
 import DashboardSummary from "./components/DashboardSummary";
 import ApplicationDetail from "./components/ApplicationDetail";
+import Toast from "./components/Toast";
 import "./index.css";
 
 function App() {
   const [applications, setApplications] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("dateDesc");
+
+  // NEW: Toast state
+  const [toast, setToast] = useState({
+    show: false,
+    message: "",
+    type: "success",
+  });
 
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return localStorage.getItem("theme") === "dark";
@@ -35,6 +43,11 @@ function App() {
       localStorage.setItem("theme", "light");
     }
   }, [isDarkMode]);
+
+  // NEW: The function that triggers the notification
+  const showToast = (message, type = "success") => {
+    setToast({ show: true, message, type });
+  };
 
   const handleAddApplication = (newApp) => {
     setApplications(createApplication(newApp));
@@ -67,27 +80,16 @@ function App() {
   return (
     <div className="dashboard-container">
       <header className="header-container">
-        <div>
-          <span className="header-eyebrow">Application Log</span>
-          <h1 className="header-title">Internship &amp; Tech Role Tracker</h1>
-        </div>
+        <h1 className="header-title">Internship & Tech Role Tracker</h1>
 
-        <div className="theme-toggle" role="group" aria-label="Colour theme">
-          <button
-            type="button"
-            aria-pressed={!isDarkMode}
-            onClick={() => setIsDarkMode(false)}
-          >
-            Light
-          </button>
-          <button
-            type="button"
-            aria-pressed={isDarkMode}
-            onClick={() => setIsDarkMode(true)}
-          >
-            Dark
-          </button>
-        </div>
+        <label className="theme-switch" aria-label="Toggle Dark Mode">
+          <input
+            type="checkbox"
+            checked={isDarkMode}
+            onChange={() => setIsDarkMode(!isDarkMode)}
+          />
+          <span className="theme-slider"></span>
+        </label>
       </header>
 
       <main>
@@ -97,39 +99,54 @@ function App() {
             element={
               <>
                 <DashboardSummary applications={applications} />
-                <ApplicationForm onAdd={handleAddApplication} />
 
-                <section>
+                {/* Pass showToast to Form */}
+                <ApplicationForm
+                  onAdd={handleAddApplication}
+                  showToast={showToast}
+                />
+
+                <div style={{ marginTop: "32px" }}>
                   <div className="controls-bar">
-                    <h2>Applications ({sortedAndFilteredApps.length})</h2>
+                    <h2>My Applications ({sortedAndFilteredApps.length})</h2>
 
-                    <div className="controls-fields">
+                    <div style={{ display: "flex", gap: "10px" }}>
                       <input
                         type="text"
-                        placeholder="Search company or role"
-                        aria-label="Search applications"
+                        placeholder="Search companies..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{
+                          width: "250px",
+                          padding: "0.75rem",
+                          borderRadius: "12px",
+                        }}
                       />
                       <select
-                        aria-label="Sort applications"
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}
+                        style={{
+                          padding: "0.75rem",
+                          borderRadius: "12px",
+                          width: "auto",
+                        }}
                       >
-                        <option value="dateDesc">Newest first</option>
-                        <option value="dateAsc">Oldest first</option>
-                        <option value="company">Company (Aâ€“Z)</option>
+                        <option value="dateDesc">Newest First</option>
+                        <option value="dateAsc">Oldest First</option>
+                        <option value="company">Company (A-Z)</option>
                         <option value="status">Status</option>
                       </select>
                     </div>
                   </div>
 
+                  {/* Pass showToast to List */}
                   <ApplicationList
                     applications={sortedAndFilteredApps}
                     onUpdate={handleUpdateApplication}
                     onDelete={handleDeleteApplication}
+                    showToast={showToast}
                   />
-                </section>
+                </div>
               </>
             }
           />
@@ -137,15 +154,28 @@ function App() {
           <Route
             path="/application/:id"
             element={
+              /* Pass showToast to Detail view */
               <ApplicationDetail
                 applications={applications}
                 onUpdate={handleUpdateApplication}
                 onDelete={handleDeleteApplication}
+                showToast={showToast}
               />
             }
           />
         </Routes>
       </main>
+
+      {/* NEW: Render the Toast element */}
+      {toast.show && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() =>
+            setToast({ show: false, message: "", type: "success" })
+          }
+        />
+      )}
     </div>
   );
 }

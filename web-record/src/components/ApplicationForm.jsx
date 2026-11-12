@@ -1,7 +1,7 @@
 // src/components/ApplicationForm.jsx
 import { useState } from "react";
 
-function ApplicationForm({ onAdd }) {
+function ApplicationForm({ onAdd, showToast }) {
   const [formData, setFormData] = useState({
     company: "",
     role: "",
@@ -19,7 +19,16 @@ function ApplicationForm({ onAdd }) {
     if (!formData.company.trim() || !formData.role.trim()) return;
 
     onAdd(formData);
-    setFormData({ ...formData, company: "", role: "", status: "Applied" });
+
+    // NEW: Fire the toast here
+    showToast(`Application saved for ${formData.company}!`, "success");
+
+    setFormData({
+      company: "",
+      role: "",
+      status: "Applied",
+      dateApplied: new Date().toISOString().split("T")[0],
+    });
   };
 
   return (
@@ -40,7 +49,7 @@ function ApplicationForm({ onAdd }) {
                 display: "block",
                 marginBottom: "0.5rem",
                 fontSize: "0.875rem",
-                color: "var(--text-muted)",
+                color: "var(--glass-muted)",
               }}
             >
               Company
@@ -60,7 +69,7 @@ function ApplicationForm({ onAdd }) {
                 display: "block",
                 marginBottom: "0.5rem",
                 fontSize: "0.875rem",
-                color: "var(--text-muted)",
+                color: "var(--glass-muted)",
               }}
             >
               Role
@@ -90,7 +99,7 @@ function ApplicationForm({ onAdd }) {
                 display: "block",
                 marginBottom: "0.5rem",
                 fontSize: "0.875rem",
-                color: "var(--text-muted)",
+                color: "var(--glass-muted)",
               }}
             >
               Status
@@ -112,7 +121,7 @@ function ApplicationForm({ onAdd }) {
                 display: "block",
                 marginBottom: "0.5rem",
                 fontSize: "0.875rem",
-                color: "var(--text-muted)",
+                color: "var(--glass-muted)",
               }}
             >
               Date Applied

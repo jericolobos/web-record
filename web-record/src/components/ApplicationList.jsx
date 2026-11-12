@@ -1,12 +1,12 @@
 // src/components/ApplicationList.jsx
 import { Link } from "react-router-dom";
 
-function ApplicationList({ applications, onUpdate, onDelete }) {
+function ApplicationList({ applications, onUpdate, onDelete, showToast }) {
   if (applications.length === 0) {
     return (
       <p
         style={{
-          color: "var(--text-muted)",
+          color: "var(--glass-muted)",
           textAlign: "center",
           padding: "2rem",
         }}
@@ -41,15 +41,17 @@ function ApplicationList({ applications, onUpdate, onDelete }) {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            flexWrap: "wrap",
+            gap: "1rem",
           }}
         >
           <div>
             <span style={getBadgeStyle(app.status)}>{app.status}</span>
             <h3 style={{ margin: "0 0 0.25rem 0" }}>{app.company}</h3>
-            <p style={{ margin: "0 0 0.5rem 0", color: "var(--text-muted)" }}>
+            <p style={{ margin: "0 0 0.5rem 0", color: "var(--glass-muted)" }}>
               {app.role}
             </p>
-            <small style={{ color: "var(--text-muted)" }}>
+            <small style={{ color: "var(--glass-muted)" }}>
               Applied: {new Date(app.dateApplied).toLocaleDateString()}
             </small>
           </div>
@@ -57,8 +59,15 @@ function ApplicationList({ applications, onUpdate, onDelete }) {
           <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
             <select
               value={app.status}
-              onChange={(e) => onUpdate({ ...app, status: e.target.value })}
-              style={{ width: "auto", padding: "0.5rem" }}
+              onChange={(e) => {
+                onUpdate({ ...app, status: e.target.value });
+                showToast(`Status updated to ${e.target.value}`, "success"); // Toast fired
+              }}
+              style={{
+                width: "auto",
+                padding: "0.5rem 0.75rem",
+                borderRadius: "12px",
+              }}
             >
               <option value="Applied">Applied</option>
               <option value="Interviewing">Interviewing</option>
@@ -66,15 +75,14 @@ function ApplicationList({ applications, onUpdate, onDelete }) {
               <option value="Offer">Offer</option>
             </select>
 
-            {/* NEW: Link to the Detail Page */}
             <Link
               to={`/application/${app.id}`}
               style={{
                 padding: "0.5rem 1rem",
-                backgroundColor: "var(--bg-color)",
-                color: "var(--text-main)",
-                border: "1px solid var(--border)",
-                borderRadius: "6px",
+                backgroundColor: "var(--input-bg)",
+                color: "var(--glass-text)",
+                border: "1px solid var(--glass-border)",
+                borderRadius: "12px",
                 textDecoration: "none",
                 fontWeight: "600",
               }}
@@ -83,10 +91,14 @@ function ApplicationList({ applications, onUpdate, onDelete }) {
             </Link>
 
             <button
-              onClick={() => onDelete(app.id)}
+              onClick={() => {
+                onDelete(app.id);
+                showToast(`${app.company} application deleted`, "error"); // Toast fired
+              }}
               style={{
                 backgroundColor: "var(--danger)",
                 padding: "0.5rem 1rem",
+                borderRadius: "12px",
               }}
             >
               Delete

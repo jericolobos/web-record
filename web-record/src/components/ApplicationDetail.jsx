@@ -2,12 +2,11 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 
-function ApplicationDetail({ applications, onUpdate, onDelete }) {
+function ApplicationDetail({ applications, onUpdate, onDelete, showToast }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [notes, setNotes] = useState("");
 
-  // Find the exact application based on the URL ID
   const app = applications.find((a) => a.id === id);
 
   useEffect(() => {
@@ -18,21 +17,24 @@ function ApplicationDetail({ applications, onUpdate, onDelete }) {
 
   if (!app) {
     return (
-      <div style={{ textAlign: "center", marginTop: "3rem" }}>
+      <div className="card" style={{ textAlign: "center", marginTop: "2rem" }}>
         <h2>Application not found.</h2>
-        <Link to="/">Return to Dashboard</Link>
+        <Link to="/" style={{ color: "var(--primary)", fontWeight: "bold" }}>
+          Return to Dashboard
+        </Link>
       </div>
     );
   }
 
   const handleSaveNotes = () => {
     onUpdate({ ...app, notes });
-    alert("Notes saved successfully!");
+    showToast("Interview notes saved successfully!", "success"); // Toast fired
   };
 
   const handleDelete = () => {
     onDelete(app.id);
-    navigate("/"); // Send user back to dashboard after deleting
+    showToast(`${app.company} application deleted`, "error"); // Toast fired
+    navigate("/");
   };
 
   return (
@@ -55,9 +57,9 @@ function ApplicationDetail({ applications, onUpdate, onDelete }) {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "flex-start",
-          borderBottom: "1px solid var(--border)",
+          borderBottom: "1px solid var(--glass-border)",
           paddingBottom: "1rem",
-          marginBottom: "1rem",
+          marginBottom: "1.5rem",
         }}
       >
         <div>
@@ -66,7 +68,7 @@ function ApplicationDetail({ applications, onUpdate, onDelete }) {
           </h2>
           <p
             style={{
-              color: "var(--text-muted)",
+              color: "var(--glass-muted)",
               fontSize: "1.25rem",
               margin: "0",
             }}
@@ -75,7 +77,7 @@ function ApplicationDetail({ applications, onUpdate, onDelete }) {
           </p>
           <small
             style={{
-              color: "var(--text-muted)",
+              color: "var(--glass-muted)",
               display: "block",
               marginTop: "0.5rem",
             }}
@@ -103,12 +105,8 @@ function ApplicationDetail({ applications, onUpdate, onDelete }) {
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Jot down interview questions, technical test links, or recruiter contact info here..."
           style={{
-            width: "100%",
             minHeight: "200px",
-            padding: "1rem",
-            borderRadius: "8px",
-            border: "1px solid var(--border)",
-            marginBottom: "1rem",
+            marginBottom: "1.25rem",
             fontFamily: "inherit",
             resize: "vertical",
           }}
